@@ -8,7 +8,7 @@ No accounts, no backend, no sync. Everything lives in IndexedDB on the device.
 
 ## Prerequisites
 
-- Node.js 20+
+- Node.js 24+
 - npm 10+
 - Docker (for deployment)
 
@@ -53,7 +53,7 @@ docker run -p 8080:8080 shotgun
 The app will be available at `http://localhost:8080`.
 
 The image uses a two-stage build:
-1. **Build stage** — Node 20 Alpine compiles the Vite app into `dist/`
+1. **Build stage** — Node 24 Alpine compiles the Vite app into `dist/`
 2. **Runtime stage** — nginx 1.27 Alpine serves the static files
 
 nginx is configured in `nginx.conf`:

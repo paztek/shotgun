@@ -99,4 +99,4 @@ src/
 
 ## Deployment
 
-Multi-stage Docker build: Node 20 Alpine for build → Caddy 2 Alpine to serve `dist/`. Caddy handles SPA fallback (`try_files {path} /index.html`), gzip, and cache headers (long-lived for hashed assets, no-cache for `index.html` and `sw.js`). Fly.io region: `cdg` (Paris). App auto-stops when idle.
+Multi-stage Docker build: Node 24 Alpine for build → nginx 1.27 Alpine to serve `dist/`. nginx (`nginx.conf`) handles SPA fallback (`try_files … /index.html`), gzip, and cache headers (long-lived for hashed assets, no-cache for `index.html` and `sw.js`). Fly.io region: `cdg` (Paris). App auto-stops when idle.

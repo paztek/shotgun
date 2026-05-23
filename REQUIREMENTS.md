@@ -266,7 +266,7 @@ Static site served by nginx in a multi-stage Docker build.
 ### `Dockerfile`
 ```dockerfile
 # --- build stage ---
-FROM node:20-alpine AS build
+FROM node:24-alpine AS build
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
