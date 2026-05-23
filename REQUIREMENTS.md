@@ -38,7 +38,7 @@ A mobile-first PWA to track who is driving the family car at any moment, so that
 | Date handling | `date-fns` | Tree-shakable |
 | PWA | `vite-plugin-pwa` | Service worker + manifest in one config |
 | Routing | `react-router-dom` v6 | Standard |
-| Deploy | Fly.io + Caddy (static) | Tiny container, free tier friendly |
+| Deploy | Fly.io + nginx (static) | Tiny container, free tier friendly |
 
 ### Package versions to pin
 Use the latest stable as of project start. Lockfile committed.
@@ -261,7 +261,7 @@ shotgun/
 
 ## 10. Deployment to Fly.io
 
-Static site served by Caddy in a multi-stage Docker build.
+Static site served by nginx in a multi-stage Docker build.
 
 ### `Dockerfile`
 ```dockerfile
@@ -274,26 +274,38 @@ COPY . .
 RUN npm run build
 
 # --- runtime stage ---
-FROM caddy:2-alpine
-COPY --from=build /app/dist /srv
-COPY Caddyfile /etc/caddy/Caddyfile
+FROM nginx:1.27-alpine
+COPY --from=build /app/dist /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 EXPOSE 8080
 ```
 
-### `Caddyfile`
-```
-:8080 {
-    root * /srv
-    encode gzip
-    try_files {path} /index.html
-    file_server
-    header {
-        Cache-Control "public, max-age=31536000, immutable"
+### `nginx.conf`
+```nginx
+server {
+    listen 8080;
+    server_name _;
+    root /usr/share/nginx/html;
+    index index.html;
+
+    gzip on;
+    gzip_types text/plain text/css application/javascript application/json image/svg+xml;
+    gzip_min_length 1024;
+
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff2?)$ {
+        add_header Cache-Control "public, max-age=31536000, immutable";
+        try_files $uri =404;
     }
-    @html path *.html
-    header @html Cache-Control "no-cache"
-    @sw path /sw.js /workbox-*.js
-    header @sw Cache-Control "no-cache"
+
+    location ~* (sw\.js|workbox-.*\.js)$ {
+        add_header Cache-Control "no-cache";
+        try_files $uri =404;
+    }
+
+    location / {
+        add_header Cache-Control "no-cache";
+        try_files $uri $uri/ /index.html;
+    }
 }
 ```
 
