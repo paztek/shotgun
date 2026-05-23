@@ -128,7 +128,7 @@ export function Home() {
         <DurationCounter startedAt={activeJourney.startedAt} className="text-4xl font-bold tabular-nums" />
       </header>
 
-      <main className="flex-1 flex flex-col px-5 gap-5">
+      <main className="flex-1 flex flex-col px-5 pb-32 gap-5 overflow-y-auto">
         {activeDriver && (
           <div className="rounded-2xl border border-border bg-card p-5 flex flex-col items-center gap-3">
             <DriverAvatar driver={activeDriver} size="xl" />
@@ -154,7 +154,7 @@ export function Home() {
         )}
       </main>
 
-      <div className="px-5 pb-8 pt-4">
+      <div className="fixed bottom-[60px] left-1/2 -translate-x-1/2 w-full max-w-[480px] px-5 pb-3 pt-2 bg-background/90 backdrop-blur-sm">
         <Button
           variant="destructive"
           size="lg"
